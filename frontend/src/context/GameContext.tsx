@@ -26,7 +26,6 @@ const GameContextProviderMain = ({
 }) => {
   const {
     setPlay,
-    playerName,
     setPlayerName,
     opponentName,
     setOpponentName,
