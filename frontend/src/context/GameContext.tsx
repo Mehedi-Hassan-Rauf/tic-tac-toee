@@ -25,8 +25,8 @@ const GameContextProviderMain = ({
   children: React.ReactNode;
 }) => {
   const {
-    play,
     setPlay,
+    playerName,
     setPlayerName,
     opponentName,
     setOpponentName,
@@ -39,7 +39,8 @@ const GameContextProviderMain = ({
     messages,
     setMessages,
   } = useStore();
-  const url = "https://tic-tac-toee-y32h.onrender.com";
+  // const url = "https://tic-tac-toee-y32h.onrender.com";
+  const url = "http://localhost:5000";
   const [socket, setSocket] = useState<Socket | null>(null);
   const takePlayerName = async () => {
     const result = await Swal.fire({
@@ -63,11 +64,6 @@ const GameContextProviderMain = ({
     });
     setSocket(newSocket);
   };
-  useEffect(() => {
-    if (play && !socket) {
-      connectSocket();
-    }
-  }, []);
 
   socket?.on("connect", function () {
     setPlay(true);
@@ -81,16 +77,14 @@ const GameContextProviderMain = ({
     setPlayingAs(data.playingAs);
     setOpponentName(data.opponentName);
   });
+
   async function playOnlineClick() {
     const result = await takePlayerName();
-
     if (!result.isConfirmed) {
       return;
     }
-
     const username = result.value;
     setPlayerName(username);
-
     const newSocket = io(url, {
       withCredentials: true,
       autoConnect: true,
@@ -99,7 +93,6 @@ const GameContextProviderMain = ({
     newSocket?.emit("request_to_play", {
       playerName: username,
     });
-
     setSocket(newSocket);
   }
   //For App.tsx
@@ -133,8 +126,7 @@ const GameContextProviderMain = ({
 
   const leave = () => {
     Swal.fire({
-      title: "Are you sure?",
-      text: "You are leaving the match",
+      title: "Don't want to play?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
@@ -144,7 +136,8 @@ const GameContextProviderMain = ({
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        socket?.emit("leave");
+        // socket?.emit("leave");
+        socket?.disconnect();
         localStorage.removeItem("uniqueList");
         setSocket(null);
         setPlay(false);
@@ -168,7 +161,8 @@ const GameContextProviderMain = ({
       allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
-        socket?.emit("leave");
+        // socket?.emit("leave");
+        socket?.disconnect();
         localStorage.removeItem("uniqueList");
         setSocket(null);
         setPlay(false);
@@ -205,7 +199,6 @@ const GameContextProviderMain = ({
     return null;
   };
   //
-
   //chat
   const [temp, setTemp] = useState({
     name: "",
@@ -229,6 +222,7 @@ const GameContextProviderMain = ({
     playOnlineClick,
     won,
     leave,
+    connectSocket,
   };
   return (
     <GameContext.Provider value={providerValue}>

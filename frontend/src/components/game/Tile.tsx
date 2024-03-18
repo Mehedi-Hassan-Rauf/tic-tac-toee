@@ -15,11 +15,9 @@ const Tile = ({ tile, id }: { tile: string; id: number }) => {
     playingAs,
   } = useStore();
   const clickOnSquare = (id: number) => {
-    console.log(playingAs, currentPlayer);
-    if (playingAs !== currentPlayer) {
+    if (playingAs !== currentPlayer || finishedState || gameState[id] !== "") {
       return;
     }
-    if (finishedState) return;
 
     socket?.emit("playerMoveFromClient", {
       state: {
@@ -36,7 +34,7 @@ const Tile = ({ tile, id }: { tile: string; id: number }) => {
   return (
     <div
       className={`w-28 h-28 text-6xl flex items-center justify-center ${
-        finishedState || playingAs !== currentPlayer
+        finishedState || playingAs !== currentPlayer || gameState[id] !== ""
           ? " cursor-not-allowed"
           : " cursor-pointer"
       } ${

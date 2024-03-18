@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Chat from "../components/chat/Chat";
 import Board from "../components/game/Board";
 import { IoLogoWechat } from "react-icons/io5";
+import { GameContextType } from "../type/type";
+import { GameContext } from "../context/GameContext";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { playOnlineClick, socket, leave } = useContext(
+    GameContext
+  ) as GameContextType;
+  window.addEventListener("pagehide", function (e) {
+    e.preventDefault();
+    localStorage.removeItem("uniqueList");
+    leave();
+  });
+
   return (
     <div className="home w-full h-full flex flex-col sm:flex-row gap-8 items-center justify-center ">
       <span

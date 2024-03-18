@@ -7,4 +7,5 @@ export interface GameContextType {
   playOnlineClick: () => void;
   won: () => number[] | null;
   leave: () => void;
+  connectSocket: () => void;
 }

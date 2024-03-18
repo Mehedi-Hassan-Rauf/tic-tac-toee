@@ -23,11 +23,12 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin:
-      process.env.NODE_ENV === "production" ? false : ["http://localhost:3000"],
+    origin: ["http://localhost:3000"],
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
+// process.env.NODE_ENV === "production" ? false : ["http://localhost:3000"],
 
 const allUsers = {};
 const allRooms = [];
@@ -109,15 +110,15 @@ io.on("connection", (socket) => {
         });
       });
       //chat end
+      // currentUser.socket.on("leave", () => {
+      //   // currentUser.online = false;
+      //   // currentUser.playing = false;
+      //   opponentPlayer.socket.emit("opponentLeftMatch");
+      //   socket.disconnect();
+      // });
     } else {
       currentUser.socket.emit("OpponentNotFound");
     }
-    currentUser.socket.on("leave", () => {
-      // currentUser.online = false;
-      // currentUser.playing = false;
-      // opponentPlayer.socket.emit("opponentLeftMatch");
-      socket.disconnect();
-    });
   });
 
   socket.on("disconnect", function () {
@@ -128,17 +129,23 @@ io.on("connection", (socket) => {
     for (let index = 0; index < allRooms.length; index++) {
       const { player1, player2 } = allRooms[index];
 
-      if (player1.socket.id === socket.id) {
+      if (player1?.socket.id === socket.id) {
         player2.socket.emit("opponentLeftMatch");
+        allRooms[index] = {};
+        // player2.playing = false;
         break;
       }
 
-      if (player2.socket.id === socket.id) {
+      if (player2?.socket.id === socket.id) {
         player1.socket.emit("opponentLeftMatch");
+        allRooms[index] = {};
+        // player1.playing = false;
         break;
       }
     }
   });
 });
 
-httpServer.listen(PORT);
+httpServer.listen(PORT, () => {
+  console.log("Connecting to server on port ", +PORT);
+});
