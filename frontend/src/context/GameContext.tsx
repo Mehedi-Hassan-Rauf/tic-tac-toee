@@ -39,12 +39,7 @@ const GameContextProviderMain = ({
     messages,
     setMessages,
   } = useStore();
-<<<<<<< HEAD
-  // const url = "https://tic-tac-toee-y32h.onrender.com";
-  const url = "http://localhost:5000";
-=======
   const url = "https://tic-tac-toee-xfis.onrender.com";
->>>>>>> 85a0a40b5c15a5411f23b166799185683a71b8e8
   const [socket, setSocket] = useState<Socket | null>(null);
   const takePlayerName = async () => {
     const result = await Swal.fire({
