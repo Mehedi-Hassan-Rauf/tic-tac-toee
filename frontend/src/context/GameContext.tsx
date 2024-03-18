@@ -39,7 +39,7 @@ const GameContextProviderMain = ({
     messages,
     setMessages,
   } = useStore();
-  const url = "https://tic-tac-toee49.netlify.app";
+  const url = "https://tic-tac-toee-xfis.onrender.com";
   const [socket, setSocket] = useState<Socket | null>(null);
   const takePlayerName = async () => {
     const result = await Swal.fire({
